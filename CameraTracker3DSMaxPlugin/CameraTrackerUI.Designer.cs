@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.btnBrowse = new System.Windows.Forms.Button();
+            this.listBoxData = new System.Windows.Forms.ListBox();
+            this.lblFile = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnBrowse
@@ -41,20 +43,42 @@
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
+            // listBoxData
+            // 
+            this.listBoxData.FormattingEnabled = true;
+            this.listBoxData.Location = new System.Drawing.Point(12, 41);
+            this.listBoxData.Name = "listBoxData";
+            this.listBoxData.Size = new System.Drawing.Size(441, 212);
+            this.listBoxData.TabIndex = 1;
+            // 
+            // lblFile
+            // 
+            this.lblFile.AutoSize = true;
+            this.lblFile.Location = new System.Drawing.Point(93, 17);
+            this.lblFile.Name = "lblFile";
+            this.lblFile.Size = new System.Drawing.Size(35, 13);
+            this.lblFile.TabIndex = 2;
+            this.lblFile.Text = "label1";
+            // 
             // CameraTrackerUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(219, 66);
+            this.ClientSize = new System.Drawing.Size(465, 261);
+            this.Controls.Add(this.lblFile);
+            this.Controls.Add(this.listBoxData);
             this.Controls.Add(this.btnBrowse);
             this.Name = "CameraTrackerUI";
             this.Text = "CameraTrackerUI";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button btnBrowse;
+        private System.Windows.Forms.ListBox listBoxData;
+        private System.Windows.Forms.Label lblFile;
     }
 }
