@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CameraTracker3DSMaxPlugin.Model {
-    class TrackerDataEntryJsonSchema {
+    public class TrackerDataEntryJsonSchema {
         public double t;
         public float px, py, pz;
         public float rx, ry, rz;
     }
-    class TrackerDataFileJsonSchema {
+   public class TrackerDataFileJsonSchema {
         public TrackerDataEntryJsonSchema[] data;
     }
 }
