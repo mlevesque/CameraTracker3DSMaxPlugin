@@ -4,6 +4,7 @@ using Autodesk.Max;
 using System.IO;
 using Newtonsoft.Json;
 using System.Globalization;
+using CameraTracker3DSMaxPlugin.Utilities;
 
 namespace CameraTracker3DSMaxPlugin {
     public partial class CameraTrackerUI : Form {
@@ -37,6 +38,8 @@ namespace CameraTracker3DSMaxPlugin {
             float scale = float.Parse(txtScale.Text, CultureInfo.InvariantCulture.NumberFormat);
             ip.RescaleWorldUnits(scale, false);
             */
+
+            //Interpolations.NearestNeighbor(0.0f, 1.0f, 0.5f);
 
             OpenFileDialog openFile = new OpenFileDialog();
             if (openFile.ShowDialog() == DialogResult.OK) {

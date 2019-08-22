@@ -31,6 +31,7 @@
             this.btnBrowse = new System.Windows.Forms.Button();
             this.listBoxData = new System.Windows.Forms.ListBox();
             this.lblFile = new System.Windows.Forms.Label();
+            this.txtScale = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnBrowse
@@ -60,11 +61,19 @@
             this.lblFile.TabIndex = 2;
             this.lblFile.Text = "label1";
             // 
+            // txtScale
+            // 
+            this.txtScale.Location = new System.Drawing.Point(209, 12);
+            this.txtScale.Name = "txtScale";
+            this.txtScale.Size = new System.Drawing.Size(100, 20);
+            this.txtScale.TabIndex = 3;
+            // 
             // CameraTrackerUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(465, 261);
+            this.Controls.Add(this.txtScale);
             this.Controls.Add(this.lblFile);
             this.Controls.Add(this.listBoxData);
             this.Controls.Add(this.btnBrowse);
@@ -80,5 +89,6 @@
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.ListBox listBoxData;
         private System.Windows.Forms.Label lblFile;
+        private System.Windows.Forms.TextBox txtScale;
     }
 }
