@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Globalization;
 using CameraTracker3DSMaxPlugin.Utilities;
+using CameraTracker3DSMaxPlugin.Modifiers;
 
 namespace CameraTracker3DSMaxPlugin {
     public partial class CameraTrackerUI : Form {
@@ -40,6 +41,7 @@ namespace CameraTracker3DSMaxPlugin {
             */
 
             //Interpolations.NearestNeighbor(0.0f, 1.0f, 0.5f);
+            //IDataModifier mod;
 
             OpenFileDialog openFile = new OpenFileDialog();
             if (openFile.ShowDialog() == DialogResult.OK) {

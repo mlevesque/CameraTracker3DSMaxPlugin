@@ -48,7 +48,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Point3Test.cs" />
     <Compile Include="Model\TrackingDataTest.cs" />
+    <Compile Include="Modifiers\ModifierContainerTest.cs" />
+    <Compile Include="Modifiers\ModifiersTest.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\InterpolationsTest.cs" />

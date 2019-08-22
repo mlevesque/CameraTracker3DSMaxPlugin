@@ -64,8 +64,11 @@
     <Compile Include="Model\JsonSchemas.cs" />
     <Compile Include="Model\TrackingData.cs" />
     <Compile Include="Model\Point3.cs" />
+    <Compile Include="Modifiers\ModifierContainer.cs" />
+    <Compile Include="Modifiers\Modifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Interpolations.cs" />
+    <Compile Include="Utilities\KeyframePlotter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CameraTrackerUI.resx">

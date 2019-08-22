@@ -23,5 +23,53 @@ namespace CameraTracker3DSMaxPlugin.Model {
                 && Math.Abs(this.Y - other.Y) < Epsilon
                 && Math.Abs(this.Z - other.Z) < Epsilon;
         }
+
+        public static bool operator ==(Point3 lhs, Point3 rhs) {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Point3 lhs, Point3 rhs) {
+            return !lhs.Equals(rhs);
+        }
+
+        public static Point3 operator +(Point3 lhs, Point3 rhs) {
+            return new Point3(
+                lhs.X + rhs.X,
+                lhs.Y + rhs.Y,
+                lhs.Z + rhs.Z
+                );
+        }
+
+        public static Point3 operator -(Point3 lhs, Point3 rhs) {
+            return new Point3(
+                lhs.X - rhs.X,
+                lhs.Y - rhs.Y,
+                lhs.Z - rhs.Z
+                );
+        }
+
+        public static Point3 operator -(Point3 other) {
+            return new Point3(
+                -other.X,
+                -other.Y,
+                -other.Z
+                );
+        }
+
+        public static Point3 operator *(float s, Point3 p) {
+            return new Point3(
+                s * p.X,
+                s * p.Y,
+                s * p.Z
+                );
+        }
+
+        public static Point3 operator *(Point3 p, float s) {
+            return new Point3(
+                p.X * s,
+                p.Y * s,
+                p.Z * s
+                );
+        }
     }
 }
