@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CameraTracker3DSMaxPlugin.Utilities;
+using System;
 
 namespace CameraTracker3DSMaxPlugin.Model {
 
@@ -47,28 +48,57 @@ namespace CameraTracker3DSMaxPlugin.Model {
             m_duration += deltaTime;
         }
 
-        public TrackingEntry GetEntryAtIndex(int index) {
+        public TrackingEntry GetDataAtIndex(int index) {
             TrackingEntry entry = m_entries[index];
             return new TrackingEntry(entry.TimeStamp, entry.Position, entry.Rotation);
         }
 
-        public TrackingEntry GetDataAtTime(double time, InterpolationMethod interpolationMethod = InterpolationMethod.NearestNeighbor) {
+        public TrackingEntry GetDataAtTime(double time, InterpolationMethod interpolationMethod = InterpolationMethod.Cubic) {
             if (IsEmpty) {
                 return null;
             }
-            switch (interpolationMethod) {
-                case InterpolationMethod.Linear:
-                    return GetDataLinearAtTime(time);
-                case InterpolationMethod.Cubic:
-                    return GetDataCubicAtTime(time);
-                case InterpolationMethod.NearestNeighbor:
-                default:
-                    return GetDataNearestNeighborAtTime(time);
+            int index = FindIndexAtTimeRec(time, 0, NumberOfEntries);
+            return GetDataAtTimeAndIndex(time, index, interpolationMethod);
+        }
+
+        public TrackingData CloneDataWithConstantInterval(double interval, InterpolationMethod interpolationMethod = InterpolationMethod.Cubic) {
+            if (interval <= 0.0) {
+                throw new ArgumentException("Interval must be a positive value.");
             }
+            int capacity = (int)(Duration / interval);
+            TrackingData newData = new TrackingData(capacity);
+            double time = 0.0;
+            int index = 0;
+            while (time < Duration) {
+                // update index to the correct entry we should work off of at the given time
+                while (index < NumberOfEntries && time >= m_entries[index].TimeStamp) {
+                    index++;
+                }
+
+                // build entry and add it to new data
+                TrackingEntry entry = GetDataAtTimeAndIndex(time, index, interpolationMethod);
+                newData.PushEntry(interval, entry.Position, entry.Rotation);
+
+                // advance time to next interval
+                time += interval;
+            }
+            return newData;
         }
 
 
-        private int FindEntryAtTimeRec(double time, int start, int end) {
+        private TrackingEntry GetDataAtTimeAndIndex(double time, int index, InterpolationMethod interpolationMethod) {
+            switch (interpolationMethod) {
+                case InterpolationMethod.Linear:
+                    return GetDataLinearAtIndex(index, time);
+                case InterpolationMethod.Cubic:
+                    return GetDataCubicAtTime(index, time);
+                case InterpolationMethod.NearestNeighbor:
+                default:
+                    return GetDataNearestNeighborAtIndex(index, time);
+            }
+        }
+
+        private int FindIndexAtTimeRec(double time, int start, int end) {
             // base case - we've narrowed down the range
             if (end - start <= 1) {
                 return start;
@@ -83,38 +113,35 @@ namespace CameraTracker3DSMaxPlugin.Model {
                 return middle;
             }
             else if (time < entry.TimeStamp) {
-                return FindEntryAtTimeRec(time, start, middle);
+                return FindIndexAtTimeRec(time, start, middle);
             }
             else {
-                return FindEntryAtTimeRec(time, middle, end);
+                return FindIndexAtTimeRec(time, middle, end);
             }
         }
 
-        private int[] GetIndexPairAtTime(double time) {
+        private int[] GetIndexPairFromIndex(int index) {
             // special case for single entry
-            if (m_entries.Count == 1) {
+            if (NumberOfEntries == 1) {
                 return new int[] { 0, 0 };
             }
 
-            // find potential starting index for pair
-            int firstIndex = FindEntryAtTimeRec(time, 0, m_entries.Count);
-
-            // if first index is at the end, then shift backwards
-            if (firstIndex == m_entries.Count - 1) {
-                return new int[] { firstIndex - 1, firstIndex };
+            // if index is at the end, then shift backwards
+            if (index == (NumberOfEntries - 1)) {
+                return new int[] { index - 1, index };
             }
             else {
-                return new int[] { firstIndex, firstIndex + 1 };
+                return new int[] { index, index + 1 };
             }
         }
 
-        private int[] GetIndexQuadAtTime(double time) {
+        private int[] GetIndexQuadFromIndex(int index) {
             // get middle pair
-            int[] pair = GetIndexPairAtTime(time);
+            int[] pair = GetIndexPairFromIndex(index);
 
             // get ending indices
             int p0 = pair[0] == 0 ? 0 : pair[0] - 1;
-            int p3 = pair[1] == (m_entries.Count - 1) ? pair[1] : pair[1] + 1;
+            int p3 = pair[1] == (NumberOfEntries - 1) ? pair[1] : pair[1] + 1;
 
             // return quad
             return new int[] { p0, pair[0], pair[1], p3 };
@@ -130,8 +157,8 @@ namespace CameraTracker3DSMaxPlugin.Model {
             }
         }
 
-        private TrackingEntry GetDataNearestNeighborAtTime(double time) {
-            int[] pair = GetIndexPairAtTime(time);
+        private TrackingEntry GetDataNearestNeighborAtIndex(int index, double time) {
+            int[] pair = GetIndexPairFromIndex(index);
             TrackingEntry entry1 = m_entries[pair[0]];
             TrackingEntry entry2 = m_entries[pair[1]];
             float t = NormalizeTimeAtRange(time, entry1.TimeStamp, entry2.TimeStamp);
@@ -142,8 +169,8 @@ namespace CameraTracker3DSMaxPlugin.Model {
                 );
         }
 
-        private TrackingEntry GetDataLinearAtTime(double time) {
-            int[] pair = GetIndexPairAtTime(time);
+        private TrackingEntry GetDataLinearAtIndex(int index, double time) {
+            int[] pair = GetIndexPairFromIndex(index);
             TrackingEntry entry1 = m_entries[pair[0]];
             TrackingEntry entry2 = m_entries[pair[1]];
             float t = NormalizeTimeAtRange(time, entry1.TimeStamp, entry2.TimeStamp);
@@ -154,8 +181,8 @@ namespace CameraTracker3DSMaxPlugin.Model {
                 );
         }
 
-        private TrackingEntry GetDataCubicAtTime(double time) {
-            int[] quad = GetIndexQuadAtTime(time);
+        private TrackingEntry GetDataCubicAtTime(int index, double time) {
+            int[] quad = GetIndexQuadFromIndex(index);
             TrackingEntry entry1 = m_entries[quad[0]];
             TrackingEntry entry2 = m_entries[quad[1]];
             TrackingEntry entry3 = m_entries[quad[2]];
